@@ -49,8 +49,16 @@ for dirpath,dirnames,filenames in os.walk('icons'):
 
         create_time_in_epoha = os.path.getctime(file_path)
         create_time = datetime.datetime.fromtimestamp(create_time_in_epoha)
-        a = create_time.year
-        print(file_path, f'{create_time}    {a}')
+        year_folder = str(create_time.year)
+        month_folder = str(create_time.month)
+        #new_folder = os.path.join('c:\\Python\\Tempo',        year_folder, month_folder)
+        new_folder = os.path.join('c:\\Python\\Tempo',year_folder,month_folder)
+        if not os.path.isdir(new_folder):
+            os.makedirs(new_folder)
+        print(file_path, f'{year_folder}    {month_folder}    {new_folder}')
+        shutil.copy2(file_path,new_folder)
+
+        #os.mkdir()
     #print(dirnames)
     #path=
     # for filename in filenames:
