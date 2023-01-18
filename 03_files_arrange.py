@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import os, time, shutil
+import zipfile
 
 # Нужно написать скрипт для упорядочивания фотографий (вообще любых файлов)
 # Скрипт должен разложить файлы из одной папки по годам и месяцам в другую.
@@ -39,12 +40,17 @@ import os, time, shutil
 in_folder ='\\lesson09\\icons'
 #print(os.path.dirname(p=in_folder))
 i=1
+# zfile = zipfile.ZipFile('icons.zip', 'r')
+# for filename in zfile.namelist():
+#     zfile.extract(filename)
 for dirpath,dirnames,filenames in os.walk('icons'):
     for filename in filenames:
         file_path = os.path.join(dirpath,filename)
+
         create_time_in_epoha = os.path.getctime(file_path)
         create_time = datetime.datetime.fromtimestamp(create_time_in_epoha)
-        print(file_path, f'{create_time}:%Y')
+        a = create_time.year
+        print(file_path, f'{create_time}    {a}')
     #print(dirnames)
     #path=
     # for filename in filenames:
