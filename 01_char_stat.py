@@ -31,10 +31,12 @@ from pprint import pprint
 #  - по алфавиту по возрастанию
 #  - по алфавиту по убыванию
 # Для этого пригодится шаблон проектирование "Шаблонный метод" см https://goo.gl/Vz4828
-file_path = 'C:\\Users\\DellWorkStation\\PycharmProjects\\TelegramBots\\pythonProject\\pythonProject\\lesson09\\python_snippets\\voyna-i-mir.txt.zip'
+file_path = 'python_snippets\\voyna-i-mir.txt.zip'
+file_path = 'events.txt'
+os.path.normpath(file_path)
 # file_path = 'C:\\Users\\DellWorkStation\\PycharmProjects\\TelegramBots\\pythonProject\\pythonProject\\lesson09\\voyna-i-mir.txt'
 # file_path = "C:\\Users\\DellWorkStation\\Desktop\\22\\tested2.txt"
-print(os.path.getsize(file_path))
+#print(os.path.getsize(file_path))
 
 
 class Statistic:
@@ -60,12 +62,21 @@ class Statistic:
         #global e_index, yo_pair
         pairs = sorted(self.stat.items(), reverse= False)
         for i in range(len(pairs)):
+            j=0
 
 
             if pairs[i][0] == 'е':
                 e_index = i
+                j+=1
             if pairs[i][0] == 'ё':
                 yo_pair = pairs[i]
+                j+=1
+            if j==2:
+                break
+        if j==2:
+
+            pairs.pop(yo_index)
+            pairs.insert(e_index-1 , yo_pair)
 
         pairs.insert(e_index+1,yo_pair)
         for pair in pairs:
@@ -86,9 +97,10 @@ class Statistic:
                 j+=1
             if j==2:
                 break
+        if j==2:
 
-        pairs.pop(yo_index)
-        pairs.insert(e_index-1 , yo_pair)
+            pairs.pop(yo_index)
+            pairs.insert(e_index-1 , yo_pair)
         for pair in pairs:
             self.stat_sorted[pair[0]] = pair[1]
         pass
