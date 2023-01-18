@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from time import strptime
+
 
 # Имеется файл events.txt вида:
 #
@@ -110,7 +112,7 @@ file_name = 'events.txt'
 out_file_name = 'out_log.txt'
 format = '%Y-%m-%d %H:%M:%S.%f'
 period = 'minute'
-period = 'hour'
+#period = 'hour'
 # period = 'month'
 # period = 'year'
 # period = 'day'
