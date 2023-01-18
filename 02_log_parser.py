@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
 
 # Имеется файл events.txt вида:
 #
@@ -19,83 +18,105 @@ import time
 #
 # Входные параметры: файл для анализа, файл результата
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
-file_for_check = 'events.txt'
-
 
 # TODO здесь ваш код
-class NokCounter:
-    def __init__(self, file_name, observing_period='minute'):
+class LogEventCounter:
+    def __init__(self, file_name, out_file_name):
+        self.event_for_find = None
         self.file_name = file_name
-        self.observing_period = observing_period
-        self.event_number_in_period = 0
-        self.current_period = None
-        self.previous_period = None
-        self.time_parameter = None
-        self.line = None
-        self.i = None
+        self.out_file_name = out_file_name
+        self.observing_period_name = None
+        self.time_parameters = None
+        self.observing_period_parameter = None
+        self.opened_period = None
+        self.closed_period = False
+        self.file_line = None
+        self.file_checked_line = None
+        self.line_lenth= 0
+        self.event_number_in_current_period = 0
 
-    def reading_lines(self):
+    def getting_period_for_count(self):
+        if self.observing_period_name == 'minute':
+            self.observing_period_parameter = self.time_parameters.tm_min
+            self.line_lenth = 17
+
+            pass
+        elif self.observing_period_name == 'hour':
+            self.observing_period_parameter = self.time_parameters.tm_hour
+            self.line_lenth = 14
+            pass
+        elif self.observing_period_name == 'month':
+            self.observing_period_parameter = self.time_parameters.tm_mon
+            self.line_lenth = 8
+        elif self.observing_period_name == 'day':
+            self.observing_period_parameter = self.time_parameters.tm_mday
+            self.line_lenth = 11
+
+            pass
+        else:
+            self.observing_period_parameter = self.time_parameters.tm_year
+            self.line_lenth = 5
+            pass
+
+    def event_count(self):
+        if self.opened_period is None:
+            self.opened_period = self.observing_period_parameter
+
+        if not self.opened_period == self.observing_period_parameter:
+            self.closed_period = True
+            self.printing_event_number()
+            self.event_number_in_current_period = 0
+            self.opened_period = self.observing_period_parameter
+
+        if self.event_for_find in self.file_line:
+            self.event_number_in_current_period += 1
 
 
+
+    def printing_event_number(self):
+        if self.closed_period ==True:
+            result =f'{self.file_checked_line[:self.line_lenth]}] {self.event_number_in_current_period}'
+            print(result)
+
+            with open(self.out_file_name,'a', encoding='utf8') as out_file:
+
+                out_file.write(result+'\n')
+
+        pass
+
+
+    def reading_file(self,observing_period_name='minute'):
+        self.observing_period_name = observing_period_name
         with open(self.file_name, 'r') as file:
             for line in file:
-                self.line = line
-                self.finding_period()
-                self.current_period = self.time_parameter
+                self.file_line = line
+                self.time_parameters = strptime(self.file_line[1:26], format)
+                self.getting_period_for_count()
 
-                self.event_counter()
+                self.event_count()
 
-
-
-    def finding_period(self):
-        i = time.strptime(self.line[1:27], '%Y-%m-%d %H:%M:%S.%f')
-        self.i = i
-        if self.observing_period == 'minute':
-            self.time_parameter = i.tm_min
-        elif self.observing_period == 'hour':
-            self.time_parameter = i.tm_hour
-        elif self.observing_period == 'month':
-            self.time_parameter = i.tm_mon
-        elif self.observing_period == 'day':
-            self.time_parameter = i.tm_mday
-        else:
-            self.time_parameter = i.tm_year
-
-    def write_event(self):
-        #print(self.current_period,self.event_number_in_period,'----------')
-        print(f'[{self.i.tm_year}-{self.i.tm_mon}-{self.i.tm_mday} {self.i.tm_hour}:{self.i.tm_min}]  {self.event_number_in_period}')
-        print(self.previous_period, self.event_number_in_period, '+++')
-        pass
-
-    def event_counter(self):
-        #print(self.previous_period,self.current_period,self.event_number_in_period,'---')
-
-        if self.previous_period != self.current_period:
-            if not self.previous_period == None:
-                #print(self.previous_period, self.event_number_in_period, '---')
-                self.write_event()
-            self.event_number_in_period = 0
-
-        if event in self.line:
-            self.event_number_in_period += 1
-
-        #print(self.previous_period, self.current_period, self.event_number_in_period, '+++',self.line[-4:-1])
-
-        self.previous_period = self.current_period
-
-        pass
+                self.file_checked_line = line
+            if not self.closed_period:
+                self.closed_period =True
+                self.printing_event_number()
+    def count_event(self,period = 'minute',event =''):
+        open(self.out_file_name, 'w').close()
+        self.event_for_find=event
+        self.reading_file(period)
 
 
-# открыть файл
-#
-# прочитать строку
-# определить минуту
-# посчитать НОК
-# записать в файл
+
+file_name = 'events.txt'
+out_file_name = 'out_log.txt'
+format = '%Y-%m-%d %H:%M:%S.%f'
 period = 'minute'
-event = 'NOK'
-counter = NokCounter(file_name=file_for_check, observing_period=period)
-counter.reading_lines()
+period = 'hour'
+# period = 'month'
+# period = 'year'
+# period = 'day'
+event = ' NOK'
+nok_counter = LogEventCounter(file_name,out_file_name)
+nok_counter.count_event(event=event,period=period)
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
