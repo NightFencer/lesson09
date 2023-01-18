@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-
+import datetime
 import os, time, shutil
 
 # Нужно написать скрипт для упорядочивания фотографий (вообще любых файлов)
 # Скрипт должен разложить файлы из одной папки по годам и месяцам в другую.
 # Например, так:
-#nihuaneponyal
+# nihuaneponyal
 #   исходная папка
 #       icons/cat.jpg
 #       icons/man.jpg
@@ -36,7 +36,22 @@ import os, time, shutil
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
 # TODO здесь ваш код
-
+in_folder ='\\lesson09\\icons'
+#print(os.path.dirname(p=in_folder))
+i=1
+for dirpath,dirnames,filenames in os.walk('icons'):
+    for filename in filenames:
+        file_path = os.path.join(dirpath,filename)
+        create_time_in_epoha = os.path.getctime(file_path)
+        create_time = datetime.datetime.fromtimestamp(create_time_in_epoha)
+        print(file_path, f'{create_time}:%Y')
+    #print(dirnames)
+    #path=
+    # for filename in filenames:
+    #     file = filename
+    #     c_time= os.path.getctime(filename)
+    #     print(filename,i,c_time)
+    #     i+=1
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
 # Основная функция должна брать параметром имя zip-файла и имя целевой папки.
