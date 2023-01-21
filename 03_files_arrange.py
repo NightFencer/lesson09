@@ -47,6 +47,7 @@ for dirpath,dirnames,filenames in os.walk('icons'):
     for filename in filenames:
         file_path = os.path.join(dirpath,filename)
 
+
         create_time_in_epoha = os.path.getctime(file_path)
         create_time = datetime.datetime.fromtimestamp(create_time_in_epoha)
         year_folder = str(create_time.year)
