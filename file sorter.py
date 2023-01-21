@@ -23,10 +23,13 @@ class FileSorter:
         self.creating_file_date = None
         self.creating_file_year = None
         self.creating_file_month = None
+        self.counter =0
+        self. total_removed =0
 
     def starter(self):
         self.path_normalaser()
         self.folder_observer()
+        print(f'Всего перенесено - {self.counter}, всего удалено - {self.total_removed}')
 
         pass
 
@@ -43,7 +46,8 @@ class FileSorter:
         pass
 
     def folder_observer(self):
-        count = 0
+
+
         for dirpath, dirnames, filenames in os.walk(self.inbound_folder):
             for self.file_name in filenames:
                 if self.file_name.endswith('zip'):
@@ -53,6 +57,7 @@ class FileSorter:
 
                 self.full_file_name = os.path.join(dirpath, self.file_name)
                 if os.path.getsize(self.full_file_name) > 100000000:
+                    print(f'{self.full_file_name} имеет размер более 100Мб, он остался на месте')
                     continue
                 self.getting_create_time()
                 self.getting_photo_taking()
@@ -60,15 +65,19 @@ class FileSorter:
                     os.makedirs(self.full_out_path)
                 try:
                     os.rename(self.full_file_name, self.full_out_new_name)
-                except:
+                    self.counter += 1
+                    print(f'{self.counter:>5} {self.full_file_name} -->{self.full_out_path} -->{self.new_name}')
+                except FileExistsError:
+                    self.total_removed +=1
+                    print(f'{self.full_file_name} удален как повторный {self.total_removed}')
+                    os.remove(self.full_file_name)
 
 
-                    self.new_name = self.new_name[0:-4] + f'({count}).JPG'
-                    self.full_out_new_name = os.path.join(self.full_out_path, self.new_name)
-                    os.rename(self.full_file_name, self.full_out_new_name)
+                    # self.new_name = self.new_name[0:-4] + f'({count}).JPG'
+                    # self.full_out_new_name = os.path.join(self.full_out_path, self.new_name)
+                    # os.rename(self.full_file_name, self.full_out_new_name)
 
-                count += 1
-                print(f'{count:>5} {self.full_file_name} -->{self.full_out_path} -->{self.new_name}')
+
                 # shutil.move(self.full_file_name, self.full_out_path)
 
         pass
@@ -124,7 +133,7 @@ class FileSorter:
         pass
 
 
-incoming = 'C:\\временная папка\\Pictures\\8.01.16'
+incoming = 'C:\\временная папка\\Pictures\\айфон4'
 outcoming = 'C:\\photo_sorted'
 fotosort = FileSorter(inbound_folder=incoming, out_path=outcoming)
 fotosort.starter()
