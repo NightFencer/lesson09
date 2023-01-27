@@ -1,48 +1,86 @@
-import os
-from PIL import Image
-from PIL.ExifTags import TAGS
-from PIL.ExifTags import TAGS
 from pprint import pprint
+from tkinter.filedialog import askdirectory
 
-# path = 'c:\\Windows'
-# number =0
-# for dirpath,dirnames,filenames in os.walk(path):
-#     print(dirpath,dirnames,filenames)
-#     print('yohoo!!!!!!')
-#     number += len(filenames)
-print(__file__)
-print(os.path.dirname(__file__))
+# Importing required libraries.
+from tkinter import Tk
+import os
+import hashlib
+from pathlib import Path
 
-# with open('image.jpg', 'rb') as fh:
-#     tags = EXIF.process_file(fh, stop_tag="EXIF DateTimeOriginal")
-#     dateTaken = tags["EXIF DateTimeOriginal"]
-# #     print(dateTaken)
-# in_folder = 'C:\\Users\\DellWorkStation\\PycharmProjects\\TelegramBots\\pythonProject\\pythonProject\\lesson09\\tempo'
-# files = os.listdir(in_folder)
-# in_folder = 'C:\\Users\\DellWorkStation\\PycharmProjects\\TelegramBots\\pythonProject\\pythonProject\\'
+from PIL import Image, ImageChops
+
+# We don't want the GUI window of
+# tkinter to be appearing on our screen
+Tk().withdraw()
+
+# Dialog box for selecting a folder.
+file_path = askdirectory(title="Select incoming folder ")
+print(file_path)
+print(len(os.listdir(file_path)))
+# Listing out all the files
+# inside our root folder.
+list_of_files = os.walk(file_path)
+
+# In order to detect the duplicate
+# files we are going to define an empty dictionary.
+unique_files = dict()
+
+for root, folders, files in list_of_files:
+
+    # Running a for loop on all the files
+    for file in files:
+
+        # Finding complete file path
+        file_path = Path(os.path.join(root, file))
+
+        # Converting all the content of
+        # our file into md5 hash.
+        Hash_file = hashlib.sha256(open(file_path, 'rb').read()).hexdigest()
+
+        # If file hash has already #
+        # been added we'll simply delete that file
+        if Hash_file not in unique_files:
+            unique_files[Hash_file] = file_path
+        else:
+            os.remove(file_path)
+            print(f"{file_path} has been deleted")
 
 
+path = file_path
+path = os.path.dirname(path)
+print(path)# Путь к папке где лежат файлы для сравнения
+imgs = os.listdir(path)
+
+print(imgs)
+
+check_file = 0  # Проверяемый файл
+current_file = 0  # Текущий файл
+
+matches_number =0
+def difference_images(img1, img2):
+    global matches_number
+    image_1 = Image.open(img1)
+    image_2 = Image.open(img2)
+    size = (30,30)
+    image_1.thumbnail(size)
+    image_2.thumbnail(size)
+
+    result = ImageChops.difference(image_1, image_2).getbbox()
+    if result is None:
+        matches_number +=1
+        print(img1, img2, 'matches',matches_number)
+    return
 
 
-from exif import Image
-ff= 'C:\\временная папка\\Pictures\\photo kolya_experiment\\05125028.JPG'
-with open(ff, 'rb') as image_file:
-
-    file = Image(image_file)
-if (os.path.getsize(ff))>10000000:
-    print('file more 10')
-elif os.path.getsize(ff)>6000000:
-    print('file more 6')
-elif os.path.getsize(ff)>5000000:
-    print('file more 5')
-else:
-    print('small')
-
-
-print(file.get('datetime_original'))
-creation_date = file.get('datetime_original')
-creation_time = creation_date
-y, m = creation_date[0:4], creation_date[5:7]
-
-name = creation_time[8:10] + creation_time[11:13] + creation_time[14:16] + creation_time[17:19] + '.JPG'
-print(f'{y:6}--{m:6}---{name}')
+while check_file < len(imgs):
+    if current_file == check_file:
+        current_file += 1
+        continue
+    if current_file == len(imgs):
+        break
+    print(check_file,current_file)
+    difference_images(os.path.join(path,imgs[current_file]), os.path.join(path,imgs[check_file]))
+    current_file += 1
+    if current_file == len(imgs):
+        check_file += 1
+        current_file = check_file

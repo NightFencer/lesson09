@@ -37,31 +37,32 @@ import zipfile
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
 # TODO здесь ваш код
-in_folder ='\\lesson09\\icons'
-#print(os.path.dirname(p=in_folder))
-i=1
+in_folder = 'C:\\Users\\DellWorkStation\\PycharmProjects\\TelegramBots\\pythonProject\\pythonProject\\lesson09\\icons'
+in_folder = 'C:\Users\DellWorkStation\Pictures — копия'
+os.path.normpath(in_folder)
+# print(os.path.dirname(p=in_folder))
+i = 1
 # zfile = zipfile.ZipFile('icons.zip', 'r')
 # for filename in zfile.namelist():
 #     zfile.extract(filename)
-for dirpath,dirnames,filenames in os.walk('icons'):
+for dirpath, dirnames, filenames in os.walk(in_folder):
     for filename in filenames:
-        file_path = os.path.join(dirpath,filename)
-
+        file_path = os.path.join(dirpath, filename)
 
         create_time_in_epoha = os.path.getctime(file_path)
         create_time = datetime.datetime.fromtimestamp(create_time_in_epoha)
         year_folder = str(create_time.year)
         month_folder = str(create_time.month)
-        #new_folder = os.path.join('c:\\Python\\Tempo',        year_folder, month_folder)
-        new_folder = os.path.join('c:\\Python\\Tempo',year_folder,month_folder)
+        # new_folder = os.path.join('c:\\Python\\Tempo',        year_folder, month_folder)
+        new_folder = os.path.join('c:\\Python\\Tempo', year_folder, month_folder)
         if not os.path.isdir(new_folder):
             os.makedirs(new_folder)
         print(file_path, f'{year_folder}    {month_folder}    {new_folder}')
-        shutil.copy2(file_path,new_folder)
+        shutil.copy2(file_path, new_folder)
 
-        #os.mkdir()
-    #print(dirnames)
-    #path=
+        # os.mkdir()
+    # print(dirnames)
+    # path=
     # for filename in filenames:
     #     file = filename
     #     c_time= os.path.getctime(filename)
